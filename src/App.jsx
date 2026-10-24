@@ -1,501 +1,732 @@
 
-import { useState } from 'react'
-
-const services = [
-  {
-    n: '01',
-    title: 'Web design',
-    text: 'Distinctive digital experiences that make your brand feel clear, confident, and memorable.',
-    tags: ['UI/UX', 'Responsive design', 'Design systems'],
-  },
-  {
-    n: '02',
-    title: 'Web development',
-    text: 'Fast, responsive websites built with clean code and practical features that work.',
-    tags: ['React', 'Frontend', 'Integrations'],
-  },
-  {
-    n: '03',
-    title: 'E-commerce',
-    text: 'Online stores that make products easy to discover and purchasing simple.',
-    tags: ['Product pages', 'Shopping flows', 'Storefronts'],
-  },
-  {
-    n: '04',
-    title: 'Website fixes',
-    text: 'Practical improvements to existing websites, from layout issues to broken features.',
-    tags: ['Debugging', 'Performance', 'Maintenance'],
-  },
-]
+import { useEffect, useState } from 'react';
 
 const projects = [
   {
-    n: '01',
-    name: 'FORM / STUDIO',
-    type: 'Brand & digital concept',
-    description: 'A bold editorial identity for a fictional creative studio.',
-    className: 'bg-[#d6ff45]',
-    mark: 'FORM.',
-    detail: 'Type-led identity',
+    number: '01',
+    name: 'Luxe Store',
+    category: 'E-commerce concept',
+    description:
+      'A premium shopping experience with a clean product layout and focused calls to action.',
+    tags: ['React', 'Tailwind CSS'],
+    style: 'project-luxe',
+    letter: 'L',
   },
   {
-    n: '02',
-    name: 'OBJECTS',
-    type: 'E-commerce concept',
-    description: 'A minimal product storefront for a fictional homeware brand.',
-    className: 'bg-[#e6d9ff]',
-    mark: 'O/',
-    detail: 'Commerce experience',
+    number: '02',
+    name: 'SmartPrep',
+    category: 'Education platform concept',
+    description:
+      'A learning dashboard concept designed around courses, progress tracking, and student workflows.',
+    tags: ['React', 'UI Design'],
+    style: 'project-prep',
+    letter: 'S',
   },
   {
-    n: '03',
-    name: 'FIELDWORK',
-    type: 'Business website concept',
-    description: 'A confident online presence for a fictional architecture practice.',
-    className: 'bg-[#f3a78d]',
-    mark: 'FW—',
-    detail: 'Business website',
+    number: '03',
+    name: 'NextWave',
+    category: 'Agency website concept',
+    description:
+      'A modern digital agency concept with clear services, bold typography, and a conversion-focused layout.',
+    tags: ['Web Design', 'Responsive'],
+    style: 'project-wave',
+    letter: 'N',
   },
-]
+];
 
-function Eyebrow({ children }) {
+const services = [
+  {
+    number: '01',
+    title: 'Website Development',
+    description:
+      'Responsive business websites built to work smoothly across desktop, tablet, and mobile.',
+  },
+  {
+    number: '02',
+    title: 'Frontend Development',
+    description:
+      'Modern interfaces using React, JavaScript, Tailwind CSS, and reusable components.',
+  },
+  {
+    number: '03',
+    title: 'Backend & Database',
+    description:
+      'Core PHP and MySQL functionality for forms, dashboards, CRUD systems, and dynamic websites.',
+  },
+  {
+    number: '04',
+    title: 'Website Improvements',
+    description:
+      'Layout fixes, responsive adjustments, bug fixing, and improvements to existing websites.',
+  },
+];
+
+const processSteps = [
+  {
+    number: '01',
+    title: 'Understand',
+    description:
+      'We discuss your goals, audience, required features, and project scope.',
+  },
+  {
+    number: '02',
+    title: 'Plan & Build',
+    description:
+      'I organize the structure and build the website in clear, manageable steps.',
+  },
+  {
+    number: '03',
+    title: 'Test & Refine',
+    description:
+      'I check responsiveness, functionality, layout, and common issues.',
+  },
+  {
+    number: '04',
+    title: 'Launch',
+    description:
+      'The finished website is prepared for deployment and handover.',
+  },
+];
+
+function ThemeToggle({ theme, onToggle }) {
+  const isDark = theme === 'dark';
+
   return (
-    <p className="mono text-[11px] uppercase tracking-[0.16em] text-[#65655b]">
-      {children}
-    </p>
-  )
+    <button
+      type="button"
+      onClick={onToggle}
+      aria-label={`Switch to ${isDark ? 'light' : 'dark'} mode`}
+      aria-pressed={isDark}
+      className="inline-flex shrink-0 items-center gap-2 rounded-full border border-[var(--border)] px-3 py-2 text-sm hover:opacity-75"
+    >
+      <span aria-hidden="true" className="text-base">
+        {isDark ? '☀' : '☾'}
+      </span>
+
+      <span>{isDark ? 'Dark' : 'Light'}</span>
+
+      <span
+        className={`relative h-5 w-9 rounded-full ${
+          isDark ? 'bg-[var(--accent-bg)]' : 'bg-[var(--surface)]'
+        }`}
+        aria-hidden="true"
+      >
+        <span
+          className={`absolute top-0.5 h-4 w-4 rounded-full shadow transition-all ${
+            isDark
+              ? 'left-[18px] bg-white'
+              : 'left-0.5 bg-[var(--text)]'
+          }`}
+        />
+      </span>
+    </button>
+  );
 }
 
-function Arrow({ diagonal = false }) {
-  return <span aria-hidden="true">{diagonal ? '↗' : '→'}</span>
-}
-
-function Navbar() {
-  const [menuOpen, setMenuOpen] = useState(false)
+function Navbar({ theme, onToggleTheme }) {
+  const [menuOpen, setMenuOpen] = useState(false);
 
   const links = [
-    ['Services', '#services'],
-    ['Selected work', '#work'],
-    ['Process', '#process'],
-    ['Contact', '#contact'],
-  ]
+    { label: 'Services', href: '#services' },
+    { label: 'Work', href: '#work' },
+    { label: 'Process', href: '#process' },
+    { label: 'Contact', href: '#contact' },
+  ];
 
   return (
-    <header className="sticky top-0 z-50 border-b border-[#171713]/15 bg-[#f5f4ed]/95 backdrop-blur">
-      <nav className="container-main flex min-h-[76px] items-center justify-between">
-        <a href="#home" aria-label="Nexora Digital home" className="text-[21px] font-bold tracking-[-0.07em]">
-          NEXORA<span className="text-[#748b13]">®</span>
+    <header className="sticky top-0 z-50 border-b border-[var(--border)] bg-[var(--page-bg)]/95 backdrop-blur-xl">
+      <nav className="container-main flex min-h-[76px] items-center justify-between gap-4">
+        <a
+          href="#home"
+          className="flex shrink-0 items-center gap-2"
+          aria-label="Nexora Digital home"
+        >
+          <span className="flex h-9 w-9 items-center justify-center rounded-full bg-[var(--accent-bg)] text-lg font-bold text-[var(--accent-fg)]">
+            N
+          </span>
+          <span className="text-lg font-bold tracking-tight">
+            nexora<span className="text-[var(--accent)]">.</span>
+          </span>
         </a>
 
-        <button
-          type="button"
-          className="border border-[#171713]/20 px-4 py-2 text-sm md:hidden"
-          aria-expanded={menuOpen}
-          aria-controls="main-menu"
-          onClick={() => setMenuOpen((open) => !open)}
-        >
-          {menuOpen ? 'Close −' : 'Menu +'}
-        </button>
-
-        <div
-          id="main-menu"
-          className={`${menuOpen ? 'flex' : 'hidden'} absolute left-0 right-0 top-[75px] flex-col gap-5 border-b border-[#171713]/15 bg-[#f5f4ed] p-5 md:static md:flex md:flex-row md:items-center md:gap-8 md:border-0 md:bg-transparent md:p-0`}
-        >
-          {links.map(([label, href]) => (
+        <div className="hidden items-center gap-7 lg:flex">
+          {links.map((link) => (
             <a
-              key={href}
-              href={href}
-              onClick={() => setMenuOpen(false)}
-              className="text-sm text-[#55554d] transition hover:text-black"
+              key={link.href}
+              href={link.href}
+              className="text-sm text-[var(--muted)] transition hover:text-[var(--text)]"
             >
-              {label}
+              {link.label}
             </a>
           ))}
+        </div>
+
+        <div className="flex items-center gap-3">
+          <ThemeToggle theme={theme} onToggle={onToggleTheme} />
+
           <a
             href="#contact"
-            onClick={() => setMenuOpen(false)}
-            className="flex items-center justify-between gap-5 bg-[#d6ff45] px-5 py-3 text-sm font-semibold transition hover:bg-[#c8f12c]"
+            className="hidden rounded-full bg-[var(--accent-bg)] px-5 py-3 text-sm font-semibold text-[var(--accent-fg)] transition hover:opacity-80 sm:inline-flex"
           >
-            Start a project <Arrow diagonal />
+            Start a project <span className="ml-2">↗</span>
           </a>
+
+          <button
+            type="button"
+            onClick={() => setMenuOpen((open) => !open)}
+            aria-label={menuOpen ? 'Close menu' : 'Open menu'}
+            aria-expanded={menuOpen}
+            className="flex h-10 w-10 items-center justify-center rounded-full border border-[var(--border)] text-xl lg:hidden"
+          >
+            {menuOpen ? '×' : '☰'}
+          </button>
         </div>
       </nav>
+
+      {menuOpen && (
+        <div className="border-t border-[var(--border)] bg-[var(--page-bg)] px-5 py-5 lg:hidden">
+          <div className="container-main flex flex-col gap-5">
+            {links.map((link) => (
+              <a
+                key={link.href}
+                href={link.href}
+                onClick={() => setMenuOpen(false)}
+                className="text-sm text-[var(--muted)] hover:text-[var(--text)]"
+              >
+                {link.label}
+              </a>
+            ))}
+
+            <a
+              href="#contact"
+              onClick={() => setMenuOpen(false)}
+              className="inline-flex w-fit rounded-full bg-[var(--accent-bg)] px-5 py-3 text-sm font-semibold text-[var(--accent-fg)]"
+            >
+              Start a project ↗
+            </a>
+          </div>
+        </div>
+      )}
     </header>
-  )
+  );
 }
 
 function Hero() {
   return (
-    <section id="home" className="grid-paper overflow-hidden border-b border-[#171713]/15">
-      <div className="container-main py-20 sm:py-28 lg:py-36">
-        <div className="flex flex-wrap items-center gap-3">
-          <span className="h-2.5 w-2.5 rounded-full bg-[#7b9218]" />
-          <Eyebrow>Independent digital studio · Open for projects</Eyebrow>
-        </div>
+    <section id="home" className="grid-paper overflow-hidden">
+      <div className="container-main grid min-h-[690px] items-center gap-14 py-20 lg:grid-cols-[1.35fr_0.65fr] lg:py-28">
+        <div>
+          <div className="mono mb-8 flex items-center gap-3 text-xs uppercase tracking-[0.18em] text-[var(--muted)]">
+            <span className="h-2 w-2 rounded-full bg-[var(--accent)]" />
+            Independent web development studio
+          </div>
 
-        <h1 className="display-title mt-10 max-w-[1100px] text-[clamp(4rem,12vw,10.5rem)] font-bold">
-          GOOD IDEAS.
-          <br />
-          <span className="outline-text">BUILT</span>{' '}
-          <span className="text-[#778d17]">BETTER.</span>
-        </h1>
+          <h1 className="display-title max-w-4xl text-6xl font-semibold sm:text-7xl md:text-8xl xl:text-[112px]">
+            Digital ideas,
+            <br />
+            built to
+            <br />
+            <span className="outline-text">move</span>{' '}
+            <span className="text-[var(--accent)]">forward.</span>
+          </h1>
 
-        <div className="mt-12 grid gap-8 md:grid-cols-[1fr_300px] md:items-end">
-          <p className="max-w-[570px] text-lg leading-8 text-[#55554d] sm:text-xl">
-            We design and build digital experiences for businesses ready to
-            make a stronger impression online.
+          <p className="mt-9 max-w-xl text-base leading-8 text-[var(--muted)] sm:text-lg">
+            I build modern, responsive websites that help businesses present
+            their ideas clearly and give visitors a better online experience.
           </p>
 
-          <a
-            href="#work"
-            className="group flex w-fit items-center gap-5 border-b border-[#171713] pb-3 text-sm font-semibold"
-          >
-            Explore selected work
-            <span className="transition group-hover:translate-x-1">
-              <Arrow />
-            </span>
-          </a>
+          <div className="mt-9 flex flex-wrap gap-4">
+            <a
+              href="#contact"
+              className="rounded-full bg-[var(--accent-bg)] px-6 py-4 text-sm font-semibold text-[var(--accent-fg)] transition hover:opacity-80"
+            >
+              Let&apos;s work together <span className="ml-2">↗</span>
+            </a>
+
+            <a
+              href="#work"
+              className="rounded-full border border-[var(--border)] px-6 py-4 text-sm font-semibold transition hover:bg-[var(--surface)]"
+            >
+              Explore selected work ↓
+            </a>
+          </div>
+
+          <div className="mt-14 flex flex-wrap gap-x-8 gap-y-3 text-xs text-[var(--muted)]">
+            <span>React & JavaScript</span>
+            <span>Responsive design</span>
+            <span>PHP & MySQL</span>
+          </div>
         </div>
 
-        <div className="mt-20 flex flex-wrap justify-between gap-5 border-t border-[#171713]/20 pt-5">
-          <Eyebrow>Strategy / Design / Development</Eyebrow>
-          <Eyebrow>Independent studio · Worldwide</Eyebrow>
+        <div className="relative mx-auto w-full max-w-md">
+          <div className="absolute -inset-5 rounded-[40px] border border-[var(--border)]" />
+
+          <div className="relative overflow-hidden rounded-[30px] border border-[var(--border)] bg-[var(--card-bg)] p-6 shadow-2xl sm:p-8">
+            <div className="flex items-center justify-between border-b border-[var(--border)] pb-5">
+              <div className="mono text-xs text-[var(--muted)]">
+                NEXORA / STUDIO
+              </div>
+              <div className="flex gap-1.5">
+                <span className="h-2 w-2 rounded-full bg-[var(--accent)]" />
+                <span className="h-2 w-2 rounded-full bg-[var(--border)]" />
+                <span className="h-2 w-2 rounded-full bg-[var(--border)]" />
+              </div>
+            </div>
+
+            <div className="py-10">
+              <div className="mono text-xs uppercase tracking-[0.2em] text-[var(--accent)]">
+                Build / Create / Launch
+              </div>
+
+              <div className="mt-6 text-5xl font-semibold leading-none tracking-[-0.08em] sm:text-6xl">
+                Make it
+                <br />
+                matter<span className="text-[var(--accent)]">.</span>
+              </div>
+
+              <p className="mt-5 max-w-xs text-sm leading-7 text-[var(--muted)]">
+                Thoughtful development. Clear design. Useful digital
+                experiences.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-2 gap-3">
+              <div className="rounded-2xl bg-[var(--surface)] p-4">
+                <div className="mono text-xs text-[var(--muted)]">FOCUS</div>
+                <div className="mt-3 font-semibold">Digital craft</div>
+              </div>
+              <div className="rounded-2xl bg-[var(--accent-bg)] p-4 text-[var(--accent-fg)]">
+                <div className="mono text-xs opacity-75">APPROACH</div>
+                <div className="mt-3 font-semibold">Built with care ↗</div>
+              </div>
+            </div>
+
+            <div className="mt-6 flex items-center justify-between border-t border-[var(--border)] pt-5">
+              <span className="mono text-xs text-[var(--muted)]">
+                DIGITAL STUDIO
+              </span>
+              <span className="text-sm font-semibold">01 — 04</span>
+            </div>
+          </div>
+
+          <div className="absolute -right-3 -top-5 flex h-16 w-16 rotate-12 items-center justify-center rounded-2xl bg-[var(--accent-bg)] text-3xl text-[var(--accent-fg)] shadow-xl sm:-right-6">
+            ↗
+          </div>
         </div>
       </div>
     </section>
-  )
+  );
 }
 
 function Intro() {
   return (
-    <section className="container-main grid gap-8 py-24 md:grid-cols-[0.65fr_1.35fr] md:py-32">
-      <Eyebrow>01 — Our approach</Eyebrow>
-      <div>
-        <h2 className="max-w-4xl text-4xl font-semibold leading-tight tracking-[-0.055em] sm:text-6xl">
-          Digital work should look sharp, feel effortless, and do its job.
-        </h2>
-        <p className="mt-8 max-w-2xl text-base leading-8 text-[#626258]">
-          Nexora is a fictional independent studio concept built to demonstrate
-          thoughtful design, responsive frontend development, and clear
-          communication. Every section is designed around what a potential
-          client needs to know.
-        </p>
+    <section className="border-t border-[var(--border)] py-20 sm:py-28">
+      <div className="container-main grid gap-10 md:grid-cols-[0.7fr_1.3fr]">
+        <div>
+          <p className="mono text-xs uppercase tracking-[0.18em] text-[var(--accent)]">
+            01 / A little about me
+          </p>
+          <h2 className="mt-5 text-3xl font-semibold tracking-tight sm:text-4xl">
+            Good websites start with clear thinking.
+          </h2>
+        </div>
+
+        <div>
+          <p className="text-xl leading-9 text-[var(--muted)] sm:text-2xl sm:leading-10">
+            Nexora Digital is a website concept built around one idea: make
+            digital experiences useful, accessible, and easy to understand.
+          </p>
+
+          <p className="mt-6 leading-8 text-[var(--muted)]">
+            I focus on responsive frontend development, practical website
+            functionality, and clean layouts. This website is a studio concept
+            and portfolio demonstration, not a claim of completed client
+            projects.
+          </p>
+
+          <a
+            href="#services"
+            className="mt-8 inline-flex items-center gap-3 text-sm font-semibold"
+          >
+            See what I can build <span className="text-[var(--accent)]">↗</span>
+          </a>
+        </div>
       </div>
     </section>
-  )
+  );
 }
 
 function Services() {
   return (
-    <section id="services" className="bg-[#171713] py-24 text-[#f5f4ed] sm:py-32">
+    <section
+      id="services"
+      className="border-y border-[var(--border)] bg-[var(--surface)] py-20 sm:py-28"
+    >
       <div className="container-main">
-        <div className="flex flex-wrap items-end justify-between gap-6">
+        <div className="mb-12 flex flex-col justify-between gap-5 md:flex-row md:items-end">
           <div>
-            <Eyebrow>02 — What we do</Eyebrow>
-            <h2 className="mt-5 text-5xl font-semibold tracking-[-0.065em] sm:text-7xl">
+            <p className="mono text-xs uppercase tracking-[0.18em] text-[var(--accent)]">
+              02 / What I do
+            </p>
+            <h2 className="mt-5 text-4xl font-semibold tracking-tight sm:text-6xl">
               Useful by design.
             </h2>
           </div>
-          <p className="max-w-xs text-sm leading-7 text-white/55">
-            Clear services. Practical solutions. No unnecessary complexity.
+
+          <p className="max-w-md leading-7 text-[var(--muted)]">
+            Practical web development services for businesses, creators, and
+            people bringing a new idea online.
           </p>
         </div>
 
-        <div className="mt-14 border-t border-white/20">
+        <div className="grid border-l border-t border-[var(--border)] sm:grid-cols-2">
           {services.map((service) => (
             <article
-              key={service.n}
-              className="group grid gap-5 border-b border-white/20 py-8 transition md:grid-cols-[60px_1fr_1fr_40px] md:items-center"
+              key={service.number}
+              className="group border-b border-r border-[var(--border)] p-6 sm:p-8 lg:p-10"
             >
-              <span className="mono text-xs text-[#d6ff45]">{service.n}</span>
-              <h3 className="text-2xl font-semibold tracking-[-0.045em] sm:text-3xl">
+              <div className="flex items-center justify-between">
+                <span className="mono text-xs text-[var(--muted)]">
+                  / {service.number}
+                </span>
+                <span className="text-2xl transition group-hover:translate-x-1 group-hover:-translate-y-1">
+                  ↗
+                </span>
+              </div>
+
+              <h3 className="mt-12 text-2xl font-semibold tracking-tight sm:text-3xl">
                 {service.title}
               </h3>
-              <div>
-                <p className="max-w-md text-sm leading-7 text-white/60">
-                  {service.text}
+
+              <p className="mt-4 max-w-md leading-7 text-[var(--muted)]">
+                {service.description}
+              </p>
+            </article>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function Projects() {
+  return (
+    <section id="work" className="py-20 sm:py-28">
+      <div className="container-main">
+        <div className="mb-12 flex flex-col justify-between gap-5 md:flex-row md:items-end">
+          <div>
+            <p className="mono text-xs uppercase tracking-[0.18em] text-[var(--accent)]">
+              03 / Selected concepts
+            </p>
+            <h2 className="mt-5 text-4xl font-semibold tracking-tight sm:text-6xl">
+              Ideas in progress.
+            </h2>
+          </div>
+
+          <p className="max-w-md leading-7 text-[var(--muted)]">
+            A few concept projects exploring different layouts and digital
+            experiences. These are demonstrations, not verified client work.
+          </p>
+        </div>
+
+        <div className="grid gap-6 lg:grid-cols-3">
+          {projects.map((project) => (
+            <article key={project.number} className="group min-w-0">
+              <div
+                className={`relative flex aspect-[4/3] flex-col justify-between overflow-hidden rounded-3xl border border-[var(--border)] p-6 sm:p-8 ${project.style}`}
+              >
+                <div className="flex items-start justify-between gap-3">
+                  <span className="mono rounded-full border border-current/20 px-3 py-2 text-xs">
+                    CONCEPT / {project.number}
+                  </span>
+                  <span className="text-2xl transition group-hover:translate-x-1 group-hover:-translate-y-1">
+                    ↗
+                  </span>
+                </div>
+
+                <div
+                  className="pointer-events-none absolute inset-0 flex items-center justify-center"
+                  aria-hidden="true"
+                >
+                  <span className="text-[180px] font-bold leading-none tracking-[-0.12em] opacity-[0.09] sm:text-[220px]">
+                    {project.letter}
+                  </span>
+                </div>
+
+                <div className="relative">
+                  <p className="mono text-xs uppercase tracking-wider opacity-70">
+                    {project.category}
+                  </p>
+                  <h3 className="mt-3 text-4xl font-semibold tracking-tight sm:text-5xl">
+                    {project.name}
+                  </h3>
+                </div>
+              </div>
+
+              <div className="pt-5">
+                <p className="leading-7 text-[var(--muted)]">
+                  {project.description}
                 </p>
+
                 <div className="mt-4 flex flex-wrap gap-2">
-                  {service.tags.map((tag) => (
+                  {project.tags.map((tag) => (
                     <span
                       key={tag}
-                      className="border border-white/20 px-2.5 py-1 text-[10px] text-white/65"
+                      className="rounded-full border border-[var(--border)] px-3 py-1.5 text-xs text-[var(--muted)]"
                     >
                       {tag}
                     </span>
                   ))}
                 </div>
               </div>
-              <span className="hidden text-2xl text-[#d6ff45] transition group-hover:translate-x-1 md:block">
-                <Arrow diagonal />
-              </span>
             </article>
           ))}
         </div>
       </div>
     </section>
-  )
-}
-
-function Projects() {
-  return (
-    <section id="work" className="container-main py-24 sm:py-32">
-      <div className="flex flex-wrap items-end justify-between gap-6">
-        <div>
-          <Eyebrow>03 — Selected concepts</Eyebrow>
-          <h2 className="mt-5 text-5xl font-semibold tracking-[-0.065em] sm:text-7xl">
-            Made to stand out.
-          </h2>
-        </div>
-        <p className="max-w-xs text-sm leading-7 text-[#626258]">
-          Three fictional brand concepts exploring different digital
-          directions. These are portfolio concepts, not client projects.
-        </p>
-      </div>
-
-      <div className="mt-14 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
-        {projects.map((project) => (
-          <article key={project.n} className="group">
-            <div
-              className={`${project.className} relative flex aspect-[4/4.2] flex-col justify-between overflow-hidden p-6 sm:p-8`}
-            >
-              <div className="flex items-center justify-between">
-                <span className="mono text-[11px]">{project.n} / CONCEPT</span>
-                <span className="text-xl"><Arrow diagonal /></span>
-              </div>
-
-              <div className="flex flex-1 items-center justify-center">
-                <span className="text-center text-[clamp(2.5rem,6vw,5rem)] font-bold tracking-[-0.09em] transition duration-300 group-hover:scale-105">
-                  {project.mark}
-                </span>
-              </div>
-
-              <p className="mono text-[10px] uppercase tracking-[0.12em]">
-                {project.detail}
-              </p>
-            </div>
-
-            <div className="flex items-start justify-between gap-4 py-5">
-              <div>
-                <h3 className="text-lg font-semibold">{project.name}</h3>
-                <p className="mt-1 text-xs text-[#626258]">{project.type}</p>
-                <p className="mt-3 max-w-xs text-sm leading-6 text-[#626258]">
-                  {project.description}
-                </p>
-              </div>
-            </div>
-          </article>
-        ))}
-      </div>
-    </section>
-  )
+  );
 }
 
 function Process() {
-  const steps = [
-    ['01', 'Listen', 'We clarify your goals, audience, content, and priorities.'],
-    ['02', 'Plan', 'We agree on scope, design direction, timeline, and deliverables.'],
-    ['03', 'Build', 'We develop the experience and test the important user flows.'],
-    ['04', 'Deliver', 'We review the result, resolve agreed issues, and prepare handover.'],
-  ]
-
   return (
-    <section id="process" className="border-y border-[#171713]/15 bg-[#e9e8df] py-24 sm:py-32">
+    <section
+      id="process"
+      className="border-y border-[var(--border)] bg-[var(--surface)] py-20 sm:py-28"
+    >
       <div className="container-main">
-        <Eyebrow>04 — How we work</Eyebrow>
-        <h2 className="mt-5 max-w-3xl text-5xl font-semibold tracking-[-0.065em] sm:text-7xl">
-          Straightforward from start to finish.
-        </h2>
+        <p className="mono text-xs uppercase tracking-[0.18em] text-[var(--accent)]">
+          04 / How it works
+        </p>
 
-        <div className="mt-14 grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
-          {steps.map(([n, title, text]) => (
-            <article key={n} className="border-t border-[#171713]/25 pt-5">
-              <span className="mono text-xs text-[#778d17]">{n}</span>
-              <h3 className="mt-7 text-2xl font-semibold">{title}</h3>
-              <p className="mt-3 text-sm leading-7 text-[#626258]">{text}</p>
-            </article>
-          ))}
+        <div className="mt-5 grid gap-8 md:grid-cols-[0.8fr_1.2fr]">
+          <h2 className="text-4xl font-semibold tracking-tight sm:text-6xl">
+            From first idea to launch.
+          </h2>
+
+          <div className="border-t border-[var(--border)]">
+            {processSteps.map((step) => (
+              <article
+                key={step.number}
+                className="grid gap-3 border-b border-[var(--border)] py-6 sm:grid-cols-[70px_1fr]"
+              >
+                <span className="mono text-xs text-[var(--accent)]">
+                  {step.number}
+                </span>
+
+                <div>
+                  <h3 className="text-xl font-semibold">{step.title}</h3>
+                  <p className="mt-2 leading-7 text-[var(--muted)]">
+                    {step.description}
+                  </p>
+                </div>
+              </article>
+            ))}
+          </div>
         </div>
       </div>
     </section>
-  )
+  );
 }
 
 function Contact() {
   const [form, setForm] = useState({
     name: '',
     email: '',
-    service: 'Web development',
+    service: 'Website Development',
     message: '',
-  })
-
-  const [error, setError] = useState('')
+  });
 
   function updateField(event) {
-    setForm((current) => ({
-      ...current,
-      [event.target.name]: event.target.value,
-    }))
+    const { name, value } = event.target;
+    setForm((current) => ({ ...current, [name]: value }));
   }
 
   function handleSubmit(event) {
-    event.preventDefault()
-    setError('')
+    event.preventDefault();
 
-    const name = form.name.trim()
-    const email = form.email.trim()
-    const message = form.message.trim()
+    const recipient = 'devwithali@gmail.com';
+    const subject = encodeURIComponent(
+      `Project enquiry from ${form.name}`
+    );
 
-    if (!name || !email || !message) {
-      setError('Please complete your name, email, and project details.')
-      return
-    }
-
-    const validEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-
-    if (!validEmail.test(email)) {
-      setError('Please enter a valid email address.')
-      return
-    }
-
-    const recipient = 'hello@nexora.example'
-    const subject = encodeURIComponent(`Project inquiry: ${form.service}`)
     const body = encodeURIComponent(
-      `Name: ${name}\nEmail: ${email}\nService: ${form.service}\n\nProject details:\n${message}`,
-    )
+      `Name: ${form.name}\n` +
+      `Email: ${form.email}\n` +
+      `Service: ${form.service}\n\n` +
+      `Project details:\n${form.message}`
+    );
 
-    window.location.href = `mailto:${recipient}?subject=${subject}&body=${body}`
+    window.location.href = `mailto:${recipient}?subject=${subject}&body=${body}`;
   }
 
   return (
-    <section id="contact" className="container-main py-24 sm:py-32">
-      <div className="grid gap-12 lg:grid-cols-[0.9fr_1.1fr]">
+    <section id="contact" className="py-20 sm:py-28">
+      <div className="container-main grid gap-12 lg:grid-cols-[0.9fr_1.1fr]">
         <div>
-          <Eyebrow>05 — Start a conversation</Eyebrow>
-          <h2 className="mt-6 text-5xl font-semibold tracking-[-0.075em] sm:text-7xl">
-            Have a good idea?
-            <span className="mt-2 block text-[#778d17]">Let's build it.</span>
-          </h2>
-          <p className="mt-7 max-w-md leading-8 text-[#626258]">
-            Tell us what you want to create, what problem it solves, and
-            what you'd like to achieve.
+          <p className="mono text-xs uppercase tracking-[0.18em] text-[var(--accent)]">
+            05 / Get in touch
           </p>
-          <div className="mt-10 inline-flex items-center gap-3 bg-[#d6ff45] px-4 py-3 text-sm font-medium">
-            Project inquiries welcome <Arrow diagonal />
+
+          <h2 className="display-title mt-6 text-5xl font-semibold sm:text-7xl">
+            Have an idea?
+            <br />
+            <span className="outline-text">Let&apos;s</span>
+            <br />
+            build it.
+          </h2>
+
+          <p className="mt-8 max-w-md leading-8 text-[var(--muted)]">
+            Tell me a little about your project, what you want to achieve, and
+            the features you need. We can start from there.
+          </p>
+
+          <div className="mt-10 border-t border-[var(--border)] pt-6">
+            <p className="mono text-xs uppercase tracking-wider text-[var(--muted)]">
+              Prefer email?
+            </p>
+            <p className="mt-3 text-lg font-medium">
+              Replace the placeholder email in this file before publishing.
+            </p>
           </div>
         </div>
 
         <form
           onSubmit={handleSubmit}
-          className="border border-[#171713]/20 bg-white/40 p-5 sm:p-8"
+          className="rounded-3xl border border-[var(--border)] bg-[var(--card-bg)] p-6 sm:p-9"
         >
-          <div className="grid gap-5 sm:grid-cols-2">
-            <label className="text-sm font-medium">
+          <div className="grid gap-6 sm:grid-cols-2">
+            <label className="block text-sm">
               Your name
               <input
+                required
                 name="name"
                 value={form.name}
                 onChange={updateField}
-                autoComplete="name"
-                required
-                maxLength={100}
-                className="mt-2 block w-full rounded-none border border-[#171713]/20 bg-transparent px-3 py-3 outline-none focus:border-[#778d17]"
-                placeholder="Name"
+                placeholder="Your name"
+                className="mt-2 w-full rounded-xl border border-[var(--border)] bg-[var(--page-bg)] px-4 py-3 outline-none placeholder:text-[var(--muted)] focus:border-[var(--accent)]"
               />
             </label>
 
-            <label className="text-sm font-medium">
+            <label className="block text-sm">
               Email address
               <input
-                name="email"
+                required
                 type="email"
+                name="email"
                 value={form.email}
                 onChange={updateField}
-                autoComplete="email"
-                required
-                maxLength={254}
-                className="mt-2 block w-full rounded-none border border-[#171713]/20 bg-transparent px-3 py-3 outline-none focus:border-[#778d17]"
                 placeholder="you@example.com"
+                className="mt-2 w-full rounded-xl border border-[var(--border)] bg-[var(--page-bg)] px-4 py-3 outline-none placeholder:text-[var(--muted)] focus:border-[var(--accent)]"
               />
             </label>
           </div>
 
-          <label className="mt-5 block text-sm font-medium">
+          <label className="mt-6 block text-sm">
             What do you need?
             <select
               name="service"
               value={form.service}
               onChange={updateField}
-              className="mt-2 block w-full rounded-none border border-[#171713]/20 bg-[#f5f4ed] px-3 py-3 outline-none focus:border-[#778d17]"
+              className="mt-2 w-full rounded-xl border border-[var(--border)] bg-[var(--page-bg)] px-4 py-3 outline-none focus:border-[var(--accent)]"
             >
-              <option>Web design</option>
-              <option>Web development</option>
-              <option>E-commerce</option>
-              <option>Website fixes</option>
-              <option>Something else</option>
+              {services.map((service) => (
+                <option key={service.number} value={service.title}>
+                  {service.title}
+                </option>
+              ))}
+              <option value="Other project">Other project</option>
             </select>
           </label>
 
-          <label className="mt-5 block text-sm font-medium">
-            Tell us about your project
+          <label className="mt-6 block text-sm">
+            Project details
             <textarea
+              required
               name="message"
               value={form.message}
               onChange={updateField}
-              required
-              minLength={10}
-              maxLength={3000}
               rows={5}
-              className="mt-2 block w-full resize-y rounded-none border border-[#171713]/20 bg-transparent px-3 py-3 outline-none focus:border-[#778d17]"
-              placeholder="What are you looking to build?"
+              placeholder="Tell me about your idea, goals, and required features..."
+              className="mt-2 w-full resize-y rounded-xl border border-[var(--border)] bg-[var(--page-bg)] px-4 py-3 outline-none placeholder:text-[var(--muted)] focus:border-[var(--accent)]"
             />
           </label>
 
-          {error && (
-            <p role="alert" className="mt-4 text-sm text-red-700">
-              {error}
-            </p>
-          )}
-
           <button
             type="submit"
-            className="mt-6 flex w-full items-center justify-between bg-[#d6ff45] px-5 py-4 text-sm font-semibold transition hover:bg-[#c8f12c]"
+            className="mt-6 flex w-full items-center justify-center gap-3 rounded-full bg-[var(--accent-bg)] px-6 py-4 text-sm font-semibold text-[var(--accent-fg)] transition hover:opacity-80"
           >
-            Prepare email inquiry <Arrow diagonal />
+            Prepare email <span>↗</span>
           </button>
 
-          <p className="mt-4 text-xs leading-5 text-[#77776d]">
-            This demo opens your default email application. It does not send
-            or store submissions on a server.
+          <p className="mt-4 text-xs leading-5 text-[var(--muted)]">
+            This form opens your default email application. It does not send
+            messages directly from the website.
           </p>
         </form>
       </div>
     </section>
-  )
+  );
 }
 
 function Footer() {
   return (
-    <footer className="bg-[#171713] py-8 text-[#f5f4ed]">
-      <div className="container-main flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
-        <a href="#home" className="text-xl font-bold tracking-[-0.07em]">
-          NEXORA<span className="text-[#d6ff45]">®</span>
+    <footer className="border-t border-[var(--border)] bg-[var(--surface)] py-8">
+      <div className="container-main flex flex-col justify-between gap-5 sm:flex-row sm:items-center">
+        <a href="#home" className="text-lg font-bold tracking-tight">
+          nexora<span className="text-[var(--accent)]">.</span>
         </a>
-        <p className="text-xs text-white/50">
-          Independent studio concept · Built with React
+
+        <p className="text-sm text-[var(--muted)]">
+          A digital studio concept. Built with care.
         </p>
-        <a href="#home" className="text-sm hover:text-[#d6ff45]">
+
+        <a
+          href="#home"
+          className="text-sm font-medium hover:text-[var(--accent)]"
+        >
           Back to top ↑
         </a>
       </div>
+
+      <div className="container-main mt-6 border-t border-[var(--border)] pt-5">
+        <p className="mono text-xs text-[var(--muted)]">
+          © {new Date().getFullYear()} NEXORA DIGITAL
+        </p>
+      </div>
     </footer>
-  )
+  );
 }
 
 export default function App() {
+  const [theme, setTheme] = useState(() => {
+    try {
+      return localStorage.getItem('nexora-theme') || 'light';
+    } catch {
+      return 'light';
+    }
+  });
+
+  useEffect(() => {
+    document.documentElement.dataset.theme = theme;
+
+    try {
+      localStorage.setItem('nexora-theme', theme);
+    } catch {
+      // The theme still works if browser storage is unavailable.
+    }
+  }, [theme]);
+
+  function toggleTheme() {
+    setTheme((current) => (current === 'light' ? 'dark' : 'light'));
+  }
+
   return (
-    <div className="min-h-screen bg-[#f5f4ed] text-[#171713]">
-      <Navbar />
+    <div
+      data-theme={theme}
+      className="min-h-screen bg-[var(--page-bg)] text-[var(--text)]"
+    >
+      <Navbar theme={theme} onToggleTheme={toggleTheme} />
+
       <main>
         <Hero />
         <Intro />
@@ -504,7 +735,8 @@ export default function App() {
         <Process />
         <Contact />
       </main>
+
       <Footer />
     </div>
-  )
+  );
 }
